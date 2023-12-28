@@ -1,0 +1,17 @@
+body.ltr .field > .heading .searchable-indicator {
+	margin-left: 7px;
+}
+
+body.rtl .field > .heading .searchable-indicator {
+	margin-right: 7px;
+}
+
+.field > .heading .searchable-indicator {
+	color: var(--light-text-color);
+}
+
+.searchable-indicator::before {
+	margin-top: -1px;
+
+	font-size: 0.75rem;
+}
