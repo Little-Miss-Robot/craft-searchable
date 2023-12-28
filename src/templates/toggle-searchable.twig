@@ -1,0 +1,15 @@
+{% import '_includes/forms.twig' as forms %}
+
+<h2>{{ 'Searchable'|t('searchable') }}</h2>
+
+{{ forms.checkboxGroupField({
+	label: 'Searchable label'|t('searchable'),
+	options: [
+		{
+			label: "Show the searchable label on edit forms"|t('searchable'),
+			name: 'enableSearchableLabel',
+			id: 'enableSearchableLabel',
+			checked: user.getPreference('enableDebugToolbarForSite')
+		},
+	],
+}) }}

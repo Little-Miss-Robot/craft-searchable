@@ -36,8 +36,20 @@ class Plugin extends BasePlugin
 	 */
 	public function __construct($id, $parent = null, array $config = [])
 	{
+        Craft::setAlias('@lmr/searchable', $this->getBasePath());
+
         // Set this as the global instance
 		static::setInstance($this);
+
+        Event::on(
+			View::class,
+			View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
+			function (RegisterTemplateRootsEvent $e) {
+				if (is_dir($baseDir = $this->getBasePath().DIRECTORY_SEPARATOR.'templates')) {
+					$e->roots[$this->id] = $baseDir;
+				}
+			}
+		);
 
 		parent::__construct($id, $parent, $config);
     }
@@ -77,6 +89,7 @@ class Plugin extends BasePlugin
         // (see https://craftcms.com/docs/4.x/extend/events.html to get started)
         $this->installCpEventListeners();
 		$this->installElementEventHandlers();
+        $this->insertInHooks();
     }
 
     protected function installElementEventHandlers()
@@ -125,6 +138,19 @@ class Plugin extends BasePlugin
                 }
             }
         );
+    }
+
+    protected function insertInHooks()
+    {
+        Craft::$app->getView()->hook('cp.users.edit.prefs', function(array &$context) {
+            $templatePath = 'searchable/toggle-searchable';
+            $context["user"] = Craft::$app->getUser()->getIdentity();
+
+            $html = Craft::$app->view->renderTemplate(
+                $templatePath, $context, Craft::$app->view::TEMPLATE_MODE_CP
+            );
+            return $html;
+        });
     }
 
     /**
