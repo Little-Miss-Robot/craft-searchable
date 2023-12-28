@@ -4,7 +4,13 @@ namespace littlemissrobot\craftsearchable;
 
 use Craft;
 use craft\base\Plugin as BasePlugin;
+use craft\elements\User;
+use craft\events\PluginEvent;
+use craft\events\RegisterTemplateRootsEvent;
+use craft\events\RegisterUserPermissionsEvent;
 use craft\events\TemplateEvent;
+use craft\services\Plugins;
+use craft\services\UserPermissions;
 use craft\web\View;
 
 use yii\base\Event;
@@ -19,7 +25,22 @@ use yii\base\Event;
  */
 class Plugin extends BasePlugin
 {
+    public static $instance;
+
     public string $schemaVersion = '1.0.0';
+
+    // Public Methods
+	// =========================================================================
+	/**
+	 * @inheritdoc
+	 */
+	public function __construct($id, $parent = null, array $config = [])
+	{
+        // Set this as the global instance
+		static::setInstance($this);
+
+		parent::__construct($id, $parent, $config);
+    }
 
     public static function config(): array
     {
@@ -33,11 +54,11 @@ class Plugin extends BasePlugin
     public function init(): void
     {
         parent::init();
+		self::$instance = $this;
 
         // Defer most setup tasks until Craft is fully initialized
         Craft::$app->onInit(function() {
             $this->attachEventHandlers();
-            // ...
         });
 
         Craft::info(
@@ -54,6 +75,43 @@ class Plugin extends BasePlugin
     {
         // Register event handlers here ...
         // (see https://craftcms.com/docs/4.x/extend/events.html to get started)
+        $this->installCpEventListeners();
+		$this->installElementEventHandlers();
+    }
+
+    protected function installElementEventHandlers()
+    {
+        // ...
+    }
+
+    protected function installCpEventListeners()
+    {
+        // Searchable: UserPermissions::EVENT_REGISTER_PERMISSIONS
+        // Register custom user permissions
+        Event::on(
+            UserPermissions::class,
+            UserPermissions::EVENT_REGISTER_PERMISSIONS,
+            function(RegisterUserPermissionsEvent $event) {
+
+                // Add permission for viewing and setting the searchable label
+                $event->permissions[] = [
+                    'heading' => Craft::t('searchable', 'Searchable'),
+                    'permissions' => [
+                        'viewSearchable' => [
+                            'label' => Craft::t('searchable', 'Can see searchable label in field labels'),
+                            'nested' => [
+                                'setSearchable' => [
+                                    'label' => Craft::t('searchable', 'Can control visibility of searchable label in user settings')
+                                ]
+                            ]
+                        ],
+                    ],
+                ];
+            }
+        );
+
+        // Searchable: View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE
+        // Register Asset Bundle on TemplateEvent
         Event::on(
             View::class,
             View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE,
@@ -61,10 +119,12 @@ class Plugin extends BasePlugin
                 if ($event->templateMode !== View::TEMPLATE_MODE_CP) {
                     return;
                 }
-                $this->registerAssetBundle();
+
+                if (Craft::$app->user->checkPermission('viewSearchable')) {
+                    $this->registerAssetBundle();
+                }
             }
         );
-
     }
 
     /**
