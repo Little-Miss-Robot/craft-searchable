@@ -99,11 +99,6 @@ class Plugin extends BasePlugin
                     'permissions' => [
                         'viewSearchable' => [
                             'label' => Craft::t('searchable', 'Can see searchable label in field labels'),
-                            'nested' => [
-                                'setSearchable' => [
-                                    'label' => Craft::t('searchable', 'Can control visibility of searchable label in user settings')
-                                ]
-                            ]
                         ],
                     ],
                 ];
