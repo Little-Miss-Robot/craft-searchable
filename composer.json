@@ -2,7 +2,7 @@
   "name": "little-miss-robot/craft-searchable",
   "description": "A simple plugin to show which fields are searchable.",
   "type": "craft-plugin",
-  "version": "1.0.0",
+  "version": "2.0.0-beta.1",
   "homepage": "https://littlemissrobot.com",
   "license": "mit",
   "keywords": [
@@ -19,8 +19,8 @@
     "rss": "https://github.com/little-miss-robot/craft-searchable/releases.atom"
   },
   "require": {
-    "php": ">=8.0.2",
-    "craftcms/cms": "^4.5.0"
+    "php": "^8..2",
+    "craftcms/cms": "^5.0.0-beta-1"
   },
   "require-dev": {
     "craftcms/ecs": "dev-main",
@@ -38,18 +38,16 @@
     "documentationUrl": "https://github.com/little-miss-robot/craft-searchable"
   },
   "scripts": {
+    "phpstan": "phpstan --memory-limit=1G",
     "check-cs": "ecs check --ansi",
-    "fix-cs": "ecs check --ansi --fix",
-    "phpstan": "phpstan --memory-limit=1G"
+    "fix-cs": "ecs check --ansi --fix"
   },
   "config": {
-    "sort-packages": true,
-    "platform": {
-      "php": "8.0.2"
-    },
     "allow-plugins": {
       "yiisoft/yii2-composer": true,
       "craftcms/plugin-installer": true
-    }
+    },
+    "optimize-autoloader": true,
+    "sort-packages": true
   }
 }
