@@ -19,7 +19,7 @@
     "rss": "https://github.com/little-miss-robot/craft-searchable/releases.atom"
   },
   "require": {
-    "php": "^8..2",
+    "php": "^8.2",
     "craftcms/cms": "^5.0.0-beta-1"
   },
   "require-dev": {
