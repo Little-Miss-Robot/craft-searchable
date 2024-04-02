@@ -58,12 +58,7 @@
         return defaultSetting;
       }
 
-      // Only check for top level fields, as search attributes are defined on top level
       var segments = id.split("-");
-      if (segments.length > 3) {
-        return defaultSetting;
-      }
-
       var handle = segments[segments.length - 2];
 
       // Check if handle is a default search attributes
