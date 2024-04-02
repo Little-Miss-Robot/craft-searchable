@@ -25,7 +25,7 @@
 
       targets.each(function () {
         var $target = $(this).get();
-        var $label = $($target).find("label").get();
+        var $label = $($target).find("label, legend").get();
 
         if (!$label.length) {
           return;
