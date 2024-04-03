@@ -25,7 +25,7 @@
 
       targets.each(function () {
         var $target = $(this).get();
-        var $label = $($target).find("label").get();
+        var $label = $($target).find("label, legend").get();
 
         if (!$label.length) {
           return;
@@ -58,13 +58,23 @@
         return defaultSetting;
       }
 
-      // Only check for top level fields, as search attributes are defined on top level
-      var segments = id.split("-");
-      if (segments.length > 3) {
-        return defaultSetting;
-      }
 
+      var segments = id.split("-");
       var handle = segments[segments.length - 2];
+
+      // Check if field might be a matrix-like field
+      if (segments.length > 3) {
+        var parentFieldId = segments[0] + "-" + segments[1] + "-field";
+        var parentField = $("#" + parentFieldId);
+
+        if (parentField) {
+          var parentFieldType = parentField.attr("data-type");
+
+          if (parentFieldType && parentFieldType == "craft\\fields\\Matrix") {
+            var handle = "matrix-" + segments[segments.length - 2];
+          }
+        }
+      }
 
       // Check if handle is a default search attributes
       var defaultAttributes = [
