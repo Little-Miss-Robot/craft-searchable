@@ -2,7 +2,7 @@
   "name": "little-miss-robot/craft-searchable",
   "description": "A simple plugin to show which fields are searchable.",
   "type": "craft-plugin",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "homepage": "https://littlemissrobot.com",
   "license": "mit",
   "keywords": [
