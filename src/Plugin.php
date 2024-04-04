@@ -72,7 +72,7 @@ class Plugin extends BasePlugin
 		// Register event handlers here ...
 		// (see https://craftcms.com/docs/4.x/extend/events.html to get started)
 		$this->installCpEventListeners();
-		$this->installElementEventHandlers();
+		// $this->installElementEventHandlers();
 	}
 
 	protected function installElementEventHandlers()
@@ -137,30 +137,37 @@ class Plugin extends BasePlugin
 		foreach ($fields as $field) {
 			$fieldType = get_class($field);
 
-			switch($fieldType) {
+			$data['fields'][$field->handle] = [
+				"id" => $field->id,
+				"searchable" => $field->searchable ?? false,
+				"type" => $fieldType,
+			];
+
+			switch ($fieldType) {
 				case "craft\\fields\\Matrix":
-					$matrixBlockFields = $field->blockTypeFields;
-
-					foreach ($matrixBlockFields as $blockField) {
-						$data['fields']['matrix-'.$blockField->handle] = [
-							"id" => $blockField->id,
-							"searchable" => $blockField->searchable ?? false,
-							"type" => $fieldType,
-						];
-					}
-				break;
-
+					$data = $this->processField($data, $field, 'matrix-', $fieldType);
+					break;
 				default:
-					$data['fields'][$field->handle] = [
-						"id" => $field->id,
-						"searchable" => $field->searchable ?? false,
-						"type" => $fieldType,
-					];
+					break;
 			}
 		}
 
 		// Register the asset bundle and pass data object
 		Craft::$app->getView()->registerAssetBundle(SearchableBundleAsset::class, \yii\web\View::POS_END);
 		Craft::$app->getView()->registerJs('Craft.SearchablePlugin.init(' . \json_encode($data) . ');', \yii\web\View::POS_END);
+	}
+
+	function processField($data, $field, $blockFieldPrefix = '', $fieldType = '') {
+		$blockFields = $field->getBlockTypeFields();
+
+		foreach ($blockFields as $blockField) {
+			$data['fields'][$blockFieldPrefix . $blockField->handle] = [
+				"id" => $blockField->id,
+				"searchable" => $blockField->searchable ?? false,
+				"type" => $fieldType,
+			];
+		}
+
+		return $data;
 	}
 }
