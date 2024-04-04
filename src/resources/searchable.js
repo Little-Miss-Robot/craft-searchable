@@ -69,8 +69,22 @@
 				if (parentField) {
 					var parentFieldType = parentField.attr("data-type");
 
-					if (parentFieldType && parentFieldType == "craft\\fields\\Matrix") {
-						var handle = "matrix-" + segments[segments.length - 2];
+					let prefix = "";
+
+					if (parentFieldType) {
+						switch (parentFieldType) {
+							case "craft\\fields\\Matrix":
+								prefix = "matrix-";
+								break;
+							case "verbb\\supertable\\fields\\SuperTableField":
+								prefix = "superTable-";
+								break;
+							default:
+								handle = ""
+						}
+
+						// TODO: doesn't work in table and row layout of SuperTable yet
+						handle = prefix + segments[segments.length - 2];
 					}
 				}
 			}

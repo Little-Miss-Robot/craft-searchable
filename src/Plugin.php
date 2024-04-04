@@ -147,6 +147,11 @@ class Plugin extends BasePlugin
 				case "craft\\fields\\Matrix":
 					$data = $this->processField($data, $field, 'matrix-', $fieldType);
 					break;
+
+				case "verbb\\supertable\\fields\\SuperTableField":
+					$data = $this->processField($data, $field, 'superTable-', $fieldType);
+					break;
+
 				default:
 					break;
 			}
