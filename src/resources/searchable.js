@@ -3,105 +3,104 @@
 /** global: $ */
 
 (function (window) {
-  if (!window.Craft || !window.Garnish || !window.$) {
-    return;
-  }
+	if (!window.Craft || !window.Garnish || !window.$) {
+		return;
+	}
 
-  Craft.SearchablePlugin = {
-    settings: {},
+	Craft.SearchablePlugin = {
+		settings: {},
 
-    init: function (data) {
-      var _this = this;
+		init: function (data) {
+			var _this = this;
 
-      this.data = data;
+			this.data = data;
 
-      this.addSearchableIcon();
-    },
+			this.addSearchableIcon();
+		},
 
-    addSearchableIcon: function () {
-      // Find all headings
-      var _this = this;
-      var targets = $(".field .heading");
+		addSearchableIcon: function () {
+			// Find all headings
+			var _this = this;
+			var targets = $(".field .heading");
 
-      targets.each(function () {
-        var $target = $(this).get();
-        var $label = $($target).find("label, legend").get();
+			targets.each(function () {
+				var $target = $(this).get();
+				var $label = $($target).find("label, legend").get();
 
-        if (!$label.length) {
-          return;
-        }
+				if (!$label.length) {
+					return;
+				}
 
-        // Get corresponding field
-        var $field = $($label).closest(".field").get();
+				// Get corresponding field
+				var $field = $($label).closest(".field").get();
 
-        // Check if searchable
-        var isSearchable = _this.getFieldSearchable($field);
+				// Check if searchable
+				var isSearchable = _this.getFieldSearchable($field);
 
-        if (isSearchable) {
-          // Append label with icon if searchable
-          $($label).append(
-            '<span class="searchable-indicator" data-icon="search" title="' +
-              _this.data.searchLabel +
-              '" aria-label="' +
-              _this.data.searchLabel +
-              '" role="img" />'
-          );
-        }
-      });
-    },
+				if (isSearchable) {
+					// Append label with icon if searchable
+					$($label).append(
+						'<span class="searchable-indicator" data-icon="search" title="' +
+						_this.data.searchLabel +
+						'" aria-label="' +
+						_this.data.searchLabel +
+						'" role="img" />'
+					);
+				}
+			});
+		},
 
-    getFieldSearchable: function (field) {
-      var id = $(field).attr("id");
-      var defaultSetting = false;
+		getFieldSearchable: function (field) {
+			var id = $(field).attr("id");
+			var defaultSetting = false;
 
-      if (!id) {
-        return defaultSetting;
-      }
+			if (!id) {
+				return defaultSetting;
+			}
 
+			var segments = id.split("-");
+			var handle = segments[segments.length - 2];
 
-      var segments = id.split("-");
-      var handle = segments[segments.length - 2];
+			// Check if field might be a matrix-like field
+			if (segments.length > 3) {
+				var parentFieldId = segments[0] + "-" + segments[1] + "-field";
+				var parentField = $("#" + parentFieldId);
 
-      // Check if field might be a matrix-like field
-      if (segments.length > 3) {
-        var parentFieldId = segments[0] + "-" + segments[1] + "-field";
-        var parentField = $("#" + parentFieldId);
+				if (parentField) {
+					var parentFieldType = parentField.attr("data-type");
 
-        if (parentField) {
-          var parentFieldType = parentField.attr("data-type");
+					if (parentFieldType && parentFieldType == "craft\\fields\\Matrix") {
+						var handle = "matrix-" + segments[segments.length - 2];
+					}
+				}
+			}
 
-          if (parentFieldType && parentFieldType == "craft\\fields\\Matrix") {
-            var handle = "matrix-" + segments[segments.length - 2];
-          }
-        }
-      }
+			// Check if handle is a default search attributes
+			var defaultAttributes = [
+				"filename",
+				"extension",
+				"kind",
+				"title",
+				"slug",
+				"username",
+				"firstname",
+				"lastname",
+				"fullname",
+				"email",
+			];
 
-      // Check if handle is a default search attributes
-      var defaultAttributes = [
-        "filename",
-        "extension",
-        "kind",
-        "title",
-        "slug",
-        "username",
-        "firstname",
-        "lastname",
-        "fullname",
-        "email",
-      ];
+			if (defaultAttributes.includes(handle)) {
+				return true;
+			} else {
+				// Else check the dataset of fields
+				var fieldData = this.data.fields[handle] || false;
 
-      if (defaultAttributes.includes(handle)) {
-        return true;
-      } else {
-        // Else check the dataset of fields
-        var fieldData = this.data.fields[handle] || false;
+				if (fieldData) {
+				return fieldData.searchable;
+				}
+			}
 
-        if (fieldData) {
-          return fieldData.searchable;
-        }
-      }
-
-      return defaultSetting;
-    },
-  };
+			return defaultSetting;
+		},
+	};
 })(window);
