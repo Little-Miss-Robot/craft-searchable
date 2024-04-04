@@ -1,20 +1,28 @@
 # Release Notes for Searchable
 
-## v2.0.0 - 2023-04-02
+## v2.0.1 - 2023-04-02
+- Updated from version 1
+- Fixed release not pushing for Craft 5
 
-- Craft 5 release
-
-## v2.0.0-beta.2 - 2023-03-04
-
-### Fixed
-- fixes typo in composer.json
-
-## v2.0.0-beta.1 - 2023-03-04
+## v1.0.3 - 2023-04-04
 
 ### Changed
-- Requires PHP 8.2
-- Require Craft-5.0.0-beta.1
+- Performed general code cleanup
+- Updated README
+
+## v1.0.2 - 2023-04-03
+
+### Changed
+- Update release version
+
+## v1.0.1 - 2023-04-03
+
+### Fixed
+- Fixed icon not showing correctly in Matrix fields
+- Fixed icon not showing in relationship field
+
+## v2.0.0 - 2023-04-02
+- Craft 5 release
 
 ## v1.0.0 - 2023-02-23
-
 - Initial release
