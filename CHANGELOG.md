@@ -1,5 +1,8 @@
 # Release Notes for Searchable
 
+## v2.0.2 - 2023-06-17
+- Fixed unhandled error
+
 ## v2.0.1 - 2023-04-02
 - Updated from version 1
 - Fixed release not pushing for Craft 5
