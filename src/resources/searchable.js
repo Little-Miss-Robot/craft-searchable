@@ -77,7 +77,7 @@
 
 			if (defaultAttributes.includes(handle)) {
 				return true;
-			} else {
+			} else if(this.data.fields) {
 				// Else check the dataset of fields
 				var fieldData = this.data.fields[handle] || false;
 
